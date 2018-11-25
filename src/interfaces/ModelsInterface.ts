@@ -1,1 +1,9 @@
-export interface ModelsInterface {}
+import { PostModel } from "../models/PostModels"
+import { UserModel } from "../models/UserModel"
+import { CommentModel } from "../models/CommentModel"
+
+export interface ModelsInterface {
+  Comment: CommentModel
+  Post: PostModel
+  User: UserModel
+}
