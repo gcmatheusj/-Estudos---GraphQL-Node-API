@@ -4,22 +4,22 @@ import * as Sequelize from 'sequelize'
 import { DbConnection } from '../interfaces/DbConnectionInterface';
 
 const basename: string = path.basename(module.filename)
-const env: string = process.env.NODE_ENV || 'development'
+const env: string = process.env.NODE_ENV.trim() || 'development'
 let config = require('../config/config.json')[env]
 let db = null
 
 if(!db) {
   db = {}
 
+  const operatorsAliases = false
+  config = Object.assign({ operatorsAliases }, config)
+
   //Instancia do sequelize
   const sequelize: Sequelize.Sequelize = new Sequelize(
-    "graphql_blog_development",
-    "root",
-    null,
-    {
-      host: "127.0.0.1",
-      dialect: "mysql"
-    }
+    config.database,
+    config.username,
+    config.password,
+    config
   )
 
   //Realiza um filtro na pasta models pegando apenas os models

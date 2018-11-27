@@ -26,8 +26,8 @@ gulp.task('static', ['clean'], () => {
 
 //Realiza limpeza na pasta dist caso algum arquivo em src seja excluido.
 gulp.task('clean', () => {
-  return gulp 
-    .src('dist')
+  return gulp
+    .src('dist/*')
     .pipe(clean())
 })
 
