@@ -1,46 +1,24 @@
 import { makeExecutableSchema } from 'graphql-tools'
 
-//Array de users mockado.
-const users: any[] = [
-  {
-    id: 1,
-    name: 'Jon',
-    email: 'jon@email.com'
-  },
-  {
-    id: 2,
-    name: 'Dany',
-    email: 'dany@email.com'
-  }
-]
+import { Query } from './query'
+import { Mutation } from './mutation'
 
-const typeDefs = `
-  type User {
-    id: ID!
-    name: String!
-    email: String!
-  }
+import { userTypes } from './resources/user/user.schema';
+import { postTypes } from './resources/post/post.schema';
 
-  type Query {
-    allUser: [User!]!
-  }
-
-  type Mutation {
-    createUser(name: String!, email: String!): User
+const SchemaDefinition = `
+  type Schema {
+    query: Query
+    mutation: Mutation
   }
 `
 
-const resolvers = {
-  Query: {
-    allUser: () => users
-  },
-  Mutation: {
-    createUser: (parent, args) => {
-      const newUser = Object.assign({ id: users.length + 1 }, args)
-      users.push(newUser)
-      return newUser
-    }
-  },
-}
-
-export default makeExecutableSchema({ typeDefs, resolvers })
+export default makeExecutableSchema({ 
+  typeDefs: [
+    SchemaDefinition,
+    Query,
+    Mutation,
+    postTypes,
+    userTypes
+  ]
+})
