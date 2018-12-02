@@ -28,7 +28,7 @@ const userTypes = `
 
 const userQueries = `
   # Permite paginação slice. 
-  users(first: Int, offset: Int): [ Users! ]!
+  users(first: Int, offset: Int): [ User! ]!
   user(id: ID!): User
 `
 
