@@ -58,6 +58,13 @@ export default (sequelize: Sequelize.Sequelize, DataTypes: Sequelize.DataTypes):
           //Valor randomico ao hash da senha.
           const salt = genSaltSync()
           user.passwd = hashSync(user.passwd, salt)
+        },
+        beforeUpdate: (user: UserInstance, options: Sequelize.CreateOptions): void => {
+          if(user.changed('passwd')){
+            //Valor randomico ao hash da senha.
+            const salt = genSaltSync()
+            user.passwd = hashSync(user.passwd, salt)
+          }
         }
       }
   })
