@@ -23,11 +23,39 @@ exports.commentResolvers = {
         }
     },
     Mutation: {
-        createComment: (parent, args, context, info) => {
+        createComment: (parent, { input }, { db }, info) => {
+            return db.sequelize.transaction((t) => {
+                return db.Comment
+                    .create(input, { transaction: t });
+            });
         },
-        updateComment: (parent, args, context, info) => {
+        updateComment: (parent, { id, input }, { db }, info) => {
+            id = parseInt(id);
+            return db.sequelize.transaction((t) => {
+                return db.Comment
+                    .findById(id)
+                    .then((comment) => {
+                    if (!comment) {
+                        throw new Error(`Comment with id ${id} not found`);
+                    }
+                    return comment.update(input, { transaction: t });
+                });
+            });
         },
-        deleteComment: (parent, args, context, info) => {
+        deleteComment: (parent, { id }, { db }, info) => {
+            id = parseInt(id);
+            return db.sequelize.transaction((t) => {
+                return db.Comment
+                    .findById(id)
+                    .then((comment) => {
+                    if (!comment) {
+                        throw new Error(`Comment with id ${id} not found`);
+                    }
+                    return comment.destroy({ transaction: t })
+                        .then(comment => true)
+                        .catch(comment => false);
+                });
+            });
         }
     }
 };
