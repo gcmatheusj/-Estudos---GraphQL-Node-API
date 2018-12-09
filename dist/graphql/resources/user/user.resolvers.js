@@ -1,6 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userResolvers = {
+    User: {
+        posts: (user, { first = 10, offset = 0 }, { db }, info) => {
+            return db.Post
+                .findAll({
+                where: { author: user.get('id') },
+                limit: first,
+                offset: offset
+            });
+        }
+    },
     Query: {
         users: (parent, { first = 10, offset = 0 }, { db }, infor) => {
             return db.User
@@ -64,7 +74,8 @@ exports.userResolvers = {
                         throw new Error(`User width id: ${id} not found!`);
                     }
                     return user.destroy({ transaction: t })
-                        .then(user => !!user);
+                        .then(user => true)
+                        .catch(user => false);
                 });
             });
         }

@@ -5,6 +5,17 @@ import { DbConnection } from '../../../interfaces/DbConnectionInterface'
 import { UserInstance } from "../../../models/UserModel";
 
 export const userResolvers = {
+    User: {
+        posts: (user, { first = 10, offset = 0 }, {db}: {db:DbConnection}, info: GraphQLResolveInfo ) => {
+            return db.Post
+                .findAll({
+                    where: {author: user.get('id')},
+                    limit: first,
+                    offset: offset
+                })
+        }
+    },
+
     Query: {
         users: (parent, { first = 10, offset = 0 }, {db}: {db: DbConnection}, infor: GraphQLResolveInfo) => {
             return db.User
@@ -76,7 +87,8 @@ export const userResolvers = {
                     }
 
                     return user.destroy({transaction: t})
-                        .then(user => !!user)
+                        .then(user => true)
+                        .catch(user => false)
                 })  
             })
         }
