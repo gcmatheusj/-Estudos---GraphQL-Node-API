@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const utils_1 = require("../../../utils/utils");
 exports.userResolvers = {
     User: {
         posts: (user, { first = 10, offset = 0 }, { db }, info) => {
@@ -8,7 +9,7 @@ exports.userResolvers = {
                 where: { author: user.get('id') },
                 limit: first,
                 offset: offset
-            });
+            }).catch(utils_1.handleError);
         }
     },
     Query: {
@@ -17,9 +18,10 @@ exports.userResolvers = {
                 .findAll({
                 limit: first,
                 offset: offset
-            });
+            }).catch(utils_1.handleError);
         },
         user: (parent, { id }, { db }, info) => {
+            id = parseInt(id);
             return db.User
                 .findById(id)
                 .then((user) => {
@@ -27,7 +29,7 @@ exports.userResolvers = {
                     throw new Error(`User width id: ${id} not found!`);
                 }
                 return user;
-            });
+            }).catch(utils_1.handleError);
         }
     },
     Mutation: {
@@ -35,7 +37,7 @@ exports.userResolvers = {
             return db.sequelize.transaction((t) => {
                 return db.User
                     .create(input, { transaction: t });
-            });
+            }).catch(utils_1.handleError);
         },
         updateUser: (parent, { id, input }, { db }, info) => {
             id = parseInt(id);
@@ -48,7 +50,7 @@ exports.userResolvers = {
                     }
                     return user.update(input, { transaction: t });
                 });
-            });
+            }).catch(utils_1.handleError);
         },
         updateUserPasswd: (parent, { id, input }, { db }, info) => {
             id = parseInt(id);
@@ -62,7 +64,7 @@ exports.userResolvers = {
                     return user.update(input, { transaction: t })
                         .then((user) => !!user);
                 });
-            });
+            }).catch(utils_1.handleError);
         },
         deleteUser: (parent, { id }, { db }, info) => {
             id = parseInt(id);
@@ -77,7 +79,7 @@ exports.userResolvers = {
                         .then(user => true)
                         .catch(user => false);
                 });
-            });
+            }).catch(utils_1.handleError);
         }
     }
 };
