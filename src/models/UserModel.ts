@@ -10,7 +10,7 @@ export interface UserAttributes {
   passwd?: string
   photo?: string
   createdAt?: string
-  updateAt?: string
+  updatedAt?: string
 }
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes {

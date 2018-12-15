@@ -9,7 +9,7 @@ export interface PostAttributes {
   photo?: string
   author?: number
   createdAt?: string
-  updateAt?: string
+  updatedAt?: string
 }
 
 export interface PostInstance extends Sequelize.Instance<PostAttributes> {}
