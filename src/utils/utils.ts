@@ -42,4 +42,4 @@ export const handleError = (error: Error) => {
     return Promise.reject(new Error(errorMessage))
 }
 
-export const JWT_SECRET: string = process.env.JWT_SECRET
+export const JWT_SECRET: string = process.env.JWT_SECRET || 'iron_man'

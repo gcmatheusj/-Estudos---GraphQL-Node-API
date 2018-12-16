@@ -42,4 +42,4 @@ exports.handleError = (error) => {
     console.log(errorMessage);
     return Promise.reject(new Error(errorMessage));
 };
-exports.JWT_SECRET = process.env.JWT_SECRET;
+exports.JWT_SECRET = process.env.JWT_SECRET || 'iron_man';
