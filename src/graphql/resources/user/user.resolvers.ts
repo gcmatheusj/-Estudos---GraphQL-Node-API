@@ -4,6 +4,9 @@ import { Transaction } from "sequelize"
 import { DbConnection } from '../../../interfaces/DbConnectionInterface'
 import { UserInstance } from "../../../models/UserModel"
 import { handleError } from "../../../utils/utils"
+import { compose } from "../../composable/composable.resolver";
+import { authResolver } from "../../composable/auth.resolver";
+import { verifyTokenResolver } from "../../composable/verify-token.resolver";
 
 export const userResolvers = {
     User: {
@@ -18,13 +21,13 @@ export const userResolvers = {
     },
 
     Query: {
-        users: (parent, { first = 10, offset = 0 }, {db}: {db: DbConnection}, infor: GraphQLResolveInfo) => {
+        users: compose(authResolver, verifyTokenResolver)((parent, { first = 10, offset = 0 }, {db}: {db: DbConnection}, infor: GraphQLResolveInfo) => {
             return db.User
                 .findAll({
                     limit: first,
                     offset: offset
                 }).catch(handleError)
-        },
+        }),
 
         user: (parent, {id}, {db}: {db: DbConnection}, info: GraphQLResolveInfo) => {
             id = parseInt(id)
