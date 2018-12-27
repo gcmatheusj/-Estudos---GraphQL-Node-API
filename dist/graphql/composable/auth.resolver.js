@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const verify_token_resolver_1 = require("./verify-token.resolver");
 exports.authResolver = (resolver) => {
     return (parent, args, context, info) => {
         if (context.authUser || context.authorization) {
@@ -8,3 +9,4 @@ exports.authResolver = (resolver) => {
         throw new Error('Unauthorized, no token provided');
     };
 };
+exports.authResolvers = [exports.authResolver, verify_token_resolver_1.verifyTokenResolver];

@@ -31,13 +31,14 @@ const userQueries = `
   # Permite paginação slice. 
   users(first: Int, offset: Int): [ User! ]!
   user(id: ID!): User
+  currentUser: User
 `
 
 const userMutations = `
   createUser(input: UserCreateInput!): User
-  updateUser(id: ID!, input: UserUpdateInput!): User
-  updateUserPasswd(id: ID!, input: UserUpdatePasswdInput!): Boolean
-  deleteUser(id: ID!): Boolean
+  updateUser(input: UserUpdateInput!): User
+  updateUserPasswd(input: UserUpdatePasswdInput!): Boolean
+  deleteUser: Boolean
 `
 
 export {
