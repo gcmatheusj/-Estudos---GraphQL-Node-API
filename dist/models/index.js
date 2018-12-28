@@ -9,7 +9,9 @@ let config = require('../config/config.json')[env];
 let db = null;
 if (!db) {
     db = {};
-    const operatorsAliases = false;
+    const operatorsAliases = {
+        $in: Sequelize.Op.in
+    };
     config = Object.assign({ operatorsAliases }, config);
     //Instancia do sequelize
     const sequelize = new Sequelize(config.database, config.username, config.password, config);

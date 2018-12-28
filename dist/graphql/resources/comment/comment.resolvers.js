@@ -6,25 +6,27 @@ const auth_resolver_1 = require("../../composable/auth.resolver");
 exports.commentResolvers = {
     //Resolvers não triviais.
     Comment: {
-        user: (comment, args, { db }, info) => {
-            return db.User
-                .findById(comment.get('user'))
+        user: (comment, args, { db, dataloaders: { userLoader } }, info) => {
+            return userLoader
+                .load(comment.get('user'))
                 .catch(utils_1.handleError);
         },
-        post: (comment, args, { db }, info) => {
-            return db.Post
-                .findById(comment.get('post'))
+        post: (comment, args, { db, dataloaders: { postLoader } }, info) => {
+            return postLoader
+                .load(comment.get('post'))
                 .catch(utils_1.handleError);
         },
     },
     Query: {
-        commentsByPost: (parent, { postId, first = 10, offset = 0 }, { db }, info) => {
+        commentsByPost: (parent, { postId, first = 10, offset = 0 }, context, info) => {
+            const { db, requestedFields } = context;
             postId = parseInt(postId);
             return db.Comment
                 .findAll({
                 where: { post: postId },
                 limit: first,
-                offset: offset
+                offset: offset,
+                attributes: requestedFields.getFields(info)
             }).catch(utils_1.handleError);
         }
     },
