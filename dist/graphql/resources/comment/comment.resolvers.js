@@ -8,12 +8,18 @@ exports.commentResolvers = {
     Comment: {
         user: (comment, args, { db, dataloaders: { userLoader } }, info) => {
             return userLoader
-                .load(comment.get('user'))
+                .load({
+                key: comment.get('user'),
+                info
+            })
                 .catch(utils_1.handleError);
         },
         post: (comment, args, { db, dataloaders: { postLoader } }, info) => {
             return postLoader
-                .load(comment.get('post'))
+                .load({
+                key: comment.get('post'),
+                info
+            })
                 .catch(utils_1.handleError);
         },
     },

@@ -13,8 +13,8 @@ class App {
         this.init();
     }
     init() {
-        this.dataLoaderFactory = new DataLoaderFactory_1.DataLoaderFactory(models_1.default);
         this.resquestedFields = new RequestedFields_1.RequestedFields();
+        this.dataLoaderFactory = new DataLoaderFactory_1.DataLoaderFactory(models_1.default, this.resquestedFields);
         this.middleware();
     }
     middleware() {

@@ -4,14 +4,15 @@ const DataLoader = require("dataloader");
 const UserLoader_1 = require("./UserLoader");
 const PostLoader_1 = require("./PostLoader");
 class DataLoaderFactory {
-    constructor(db) {
+    constructor(db, requestedFields) {
         this.db = db;
+        this.requestedFields = requestedFields;
     }
     //Processamento em lotes.
     getLoaders() {
         return {
-            userLoader: new DataLoader((ids) => UserLoader_1.UserLoader.batchUsers(this.db.User, ids)),
-            postLoader: new DataLoader((ids) => PostLoader_1.PostLoader.batchPosts(this.db.Post, ids))
+            userLoader: new DataLoader((params) => UserLoader_1.UserLoader.batchUsers(this.db.User, params, this.requestedFields), { cacheKeyFn: (param) => param.key }),
+            postLoader: new DataLoader((params) => PostLoader_1.PostLoader.batchPosts(this.db.Post, params, this.requestedFields), { cacheKeyFn: (param) => param.key })
         };
     }
 }
