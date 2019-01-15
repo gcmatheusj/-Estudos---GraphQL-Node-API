@@ -47,7 +47,7 @@ export const userResolvers = {
                     attributes: requestedFields.getFields(info, {keep: ['id'], exclude: ['posts']})
                 })
                 .then((user: UserInstance) => {
-                    throwError(!user, `User width id: ${id} not found!`)
+                    throwError(!user, `User with id: ${id} not found!`)
                     
                     return user
                 }).catch(handleError)
@@ -61,7 +61,7 @@ export const userResolvers = {
                     attributes: requestedFields.getFields(info, {keep: ['id'], exclude: ['posts']})
                 })
                 .then((user: UserInstance) => {
-                    throwError(!user, `User width id: ${authUser.id} not found!`)
+                    throwError(!user, `User with id: ${authUser.id} not found!`)
 
                     return user
                 }).catch(handleError)
@@ -80,7 +80,7 @@ export const userResolvers = {
                 return db.User
                     .findById(authUser.id)
                     .then((user: UserInstance) => {
-                        throwError(!user, `User width id: ${authUser.id} not found!`)
+                        throwError(!user, `User with id: ${authUser.id} not found!`)
                         
                         return user.update(input, {transaction: t})
                     })
@@ -92,7 +92,7 @@ export const userResolvers = {
                 return db.User
                     .findById(authUser.id)
                     .then((user: UserInstance) => {
-                        throwError(!user, `User width id: ${authUser.id} not found!`)
+                        throwError(!user, `User with id: ${authUser.id} not found!`)
                         
                         return user.update(input, {transaction: t})
                             .then((user: UserInstance) => !!user)
@@ -105,7 +105,7 @@ export const userResolvers = {
               return db.User
                 .findById(authUser.id)
                 .then((user: UserInstance) => {
-                    throwError(!user, `User width id: ${authUser.id} not found!`)
+                    throwError(!user, `User with id: ${authUser.id} not found!`)
                     
                     return user.destroy({transaction: t})
                         .then(user => true)

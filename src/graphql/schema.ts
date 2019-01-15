@@ -11,7 +11,7 @@ import { userTypes } from './resources/user/user.schema'
 
 import { commentResolvers } from './resources/comment/comment.resolvers'
 import { postResolvers } from './resources/post/post.resolvers'
-import { tokenResolvers } from './resources/token/token.resolvers';
+import { tokenResolvers } from './resources/token/token.resolvers'
 import { userResolvers } from './resources/user/user.resolvers'
 
 //merge() faz a unificação de todos os resolvers.
