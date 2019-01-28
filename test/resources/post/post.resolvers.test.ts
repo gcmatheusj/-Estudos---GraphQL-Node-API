@@ -23,7 +23,7 @@ describe('Post', () => {
                 },
             )).then((user: UserInstance) => {
                 userId = user.get('id')
-                
+
                 const payload = { sub: userId }
                 token = jwt.sign(payload, JWT_SECRET)
 
@@ -122,5 +122,177 @@ describe('Post', () => {
                 })
             })
         })
+
+        describe('application/graphql', () => {
+            describe('posts', () => {
+                it('should return a list of Posts', () => {
+                    let query = `
+                            query {
+                                posts {
+                                    title
+                                    content
+                                }
+                            }
+                        `
+
+                    return chai.request(app)
+                        .post('/graphql')
+                        .set('content-type', 'application/graphql')
+                        .send(query)
+                        .then(res => {
+                            const postsList = res.body.data.posts
+
+                            expect(res.body.data).to.be.an('object')
+                            expect(postsList).to.be.an('array').of.length(3)
+                            expect(postsList[0]).to.not.have.keys(['id', 'createdAt', 'updatedAt', 'comments'])
+                            expect(postsList[0]).to.have.keys(['title', 'content'])
+                            expect(postsList[0].title).to.equal('First post')
+                        }).catch(handleError)
+                })
+
+                it('should paginate a list of Posts', () => {
+                    let query = `
+                            query getPostsLists($first: Int, $offset: Int) {
+                                posts(first: $first, offset: $offset) {
+                                    title
+                                    content
+                                }
+                            }
+                        `
+
+                    return chai.request(app)
+                        .post('/graphql')
+                        .set('content-type', 'application/graphql')
+                        .send(query)
+                        .query({
+                            variables: JSON.stringify({
+                                first: 2,
+                                offset: 1
+                            })
+                        })
+                        .then(res => {
+                            const postsList = res.body.data.posts
+
+                            expect(res.body.data).to.be.an('object')
+                            expect(postsList).to.be.an('array').with.length(2)
+                            expect(postsList[0]).to.not.have.keys(['id', 'createdAt', 'updatedAt', 'comments'])
+                            expect(postsList[0]).to.have.keys(['title', 'content'])
+                            expect(postsList[0].title).to.equal('Second post')
+                        }).catch(handleError)
+                })
+            })
+        })
     })
+
+    describe('Mutations', () => {
+        describe('application/json', () => {
+            describe('createPost', () => {
+                it('should create a new Post', () => {
+                    let body = {
+                        query: `
+                            mutation createNewPost($input: PostInput!) {
+                                createPost(input: $input) {
+                                    id
+                                    title
+                                    content
+                                    author {
+                                        id
+                                        name
+                                        email  
+                                    }
+                                }
+                            }
+                        `,
+                        variables: {
+                            input: {
+                                title: 'Fourth post',
+                                content: 'Fourth content',
+                                photo: 'some_photo'
+                            }
+                        }
+                    }
+
+                    return chai.request(app)
+                        .post('/graphql')
+                        .set('content-type', 'application/json')
+                        .set('authorization', `Bearer ${token}`)
+                        .send(JSON.stringify(body))
+                        .then(res => {
+                            const createPost = res.body.data.createPost
+
+                            expect(createPost).to.be.an('object')
+                            expect(createPost).to.have.keys(['id', 'title', 'content', 'author'])
+                            expect(createPost.title).to.equal('Fourth post')
+                            expect(createPost.content).to.equal('Fourth content')
+                            expect(parseInt(createPost.author.id)).to.equal(userId)
+                        }).catch(handleError)
+                })
+            })
+
+            describe('updatePost', () => {
+                it('should update an existing Post', () => {
+                    let body = {
+                        query: `
+                            mutation updateExistingPost($id: ID!, $input: PostInput!) {
+                                updatePost(id: $id, input: $input) {
+                                    title
+                                    content
+                                    photo
+                                }
+                            }
+                        `,
+                        variables: {
+                            id: postId,
+                            input: {
+                                title: 'Post changed',
+                                content: 'Content changed',
+                                photo: 'some_photo_2'
+                            }
+                        }
+                    }
+
+                    return chai.request(app)
+                        .post('/graphql')
+                        .set('content-type', 'application/json')
+                        .set('authorization', `Bearer ${token}`)
+                        .send(JSON.stringify(body))
+                        .then(res => {
+                            const updatedPost = res.body.data.updatePost
+
+                            expect(updatedPost).to.be.an('object')
+                            expect(updatedPost).to.have.keys(['title', 'content', 'photo'])
+                            expect(updatedPost.title).to.equal('Post changed')
+                            expect(updatedPost.content).to.equal('Content changed')
+                            expect(updatedPost.photo).to.equal('some_photo_2')
+                        }).catch(handleError)
+                })
+            })
+
+            describe('deletePost', () => {
+                it('should delete an existing Post', () => {
+                    let body = {
+                        query: `
+                            mutation deleteExistingPost($id: ID!) {
+                                deletePost(id: $id) 
+                            }
+                        `,
+                        variables: {
+                            id: postId,
+                        }
+                    }
+
+                    return chai.request(app)
+                        .post('/graphql')
+                        .set('content-type', 'application/json')
+                        .set('authorization', `Bearer ${token}`)
+                        .send(JSON.stringify(body))
+                        .then(res => {
+                            expect(res.body.data).to.have.key('deletePost')
+                            expect(res.body.data.deletePost).to.be.true
+                        }).catch(handleError)
+                })
+            })
+        })
+    })
+
 })

@@ -34,7 +34,7 @@ exports.userResolvers = {
                 attributes: requestedFields.getFields(info, { keep: ['id'], exclude: ['posts'] })
             })
                 .then((user) => {
-                utils_1.throwError(!user, `User width id: ${id} not found!`);
+                utils_1.throwError(!user, `User with id: ${id} not found!`);
                 return user;
             }).catch(utils_1.handleError);
         },
@@ -45,7 +45,7 @@ exports.userResolvers = {
                 attributes: requestedFields.getFields(info, { keep: ['id'], exclude: ['posts'] })
             })
                 .then((user) => {
-                utils_1.throwError(!user, `User width id: ${authUser.id} not found!`);
+                utils_1.throwError(!user, `User with id: ${authUser.id} not found!`);
                 return user;
             }).catch(utils_1.handleError);
         })
@@ -62,7 +62,7 @@ exports.userResolvers = {
                 return db.User
                     .findById(authUser.id)
                     .then((user) => {
-                    utils_1.throwError(!user, `User width id: ${authUser.id} not found!`);
+                    utils_1.throwError(!user, `User with id: ${authUser.id} not found!`);
                     return user.update(input, { transaction: t });
                 });
             }).catch(utils_1.handleError);
@@ -72,7 +72,7 @@ exports.userResolvers = {
                 return db.User
                     .findById(authUser.id)
                     .then((user) => {
-                    utils_1.throwError(!user, `User width id: ${authUser.id} not found!`);
+                    utils_1.throwError(!user, `User with id: ${authUser.id} not found!`);
                     return user.update(input, { transaction: t })
                         .then((user) => !!user);
                 });
@@ -83,7 +83,7 @@ exports.userResolvers = {
                 return db.User
                     .findById(authUser.id)
                     .then((user) => {
-                    utils_1.throwError(!user, `User width id: ${authUser.id} not found!`);
+                    utils_1.throwError(!user, `User with id: ${authUser.id} not found!`);
                     return user.destroy({ transaction: t })
                         .then(user => true)
                         .catch(user => false);
